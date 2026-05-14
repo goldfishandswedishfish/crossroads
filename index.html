@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crossroads — Travel by Music</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <span class="logo">Crossroads</span>
+      <span class="logo-tagline">Travel the world through music</span>
+    </div>
+    <div class="mode-toggle">
+      <button id="btn-mode-place" class="mode-btn active">Place → Songs</button>
+      <button id="btn-mode-song" class="mode-btn">Song → Places</button>
+    </div>
+    <div class="header-right">
+      <button id="btn-settings" class="icon-btn" title="Settings">⚙</button>
+    </div>
+  </header>
+
+  <main>
+    <aside id="sidebar">
+
+      <!-- Mode A: Place → Songs -->
+      <div id="panel-place" class="panel active">
+        <p class="panel-intro">Search or click the map to pin locations, then find songs that reference them.</p>
+
+        <div class="autocomplete-wrap" id="location-search-wrap">
+          <input type="text" id="input-location-search" placeholder="Search for a location…" autocomplete="off" />
+          <div id="location-dropdown" class="autocomplete-dropdown" style="display:none"></div>
+        </div>
+
+        <div class="control-section">
+          <span class="control-label">Song references location by</span>
+          <div class="pill-group" id="assoc-place">
+            <button class="pill active" data-value="title"
+              data-tooltip="Location appears in the song's title">Title</button>
+            <button class="pill" data-value="lyrics"
+              data-tooltip="Location is named somewhere in the lyrics">Lyrics</button>
+          </div>
+        </div>
+
+        <div id="pins-list">
+          <p class="empty-state">No locations pinned yet.</p>
+        </div>
+
+        <button id="btn-find-songs" class="primary-btn" disabled>Find Songs</button>
+        <div id="results-place" class="results"></div>
+      </div>
+
+      <!-- Mode B: Song → Places -->
+      <div id="panel-song" class="panel">
+        <p class="panel-intro">Enter a song that references a place. We'll find other songs about nearby locations.</p>
+
+        <div class="input-group">
+          <div class="autocomplete-wrap">
+            <input type="text" id="input-song-title" placeholder="Song title" autocomplete="off" />
+            <div id="autocomplete-dropdown" class="autocomplete-dropdown" style="display:none"></div>
+          </div>
+          <input type="text" id="input-song-artist" placeholder="Artist (optional)" />
+        </div>
+
+        <div class="control-section">
+          <span class="control-label">Find nearby songs by</span>
+          <div class="pill-group" id="assoc-song">
+            <button class="pill active" data-value="title"
+              data-tooltip="Location appears in the song's title">Title</button>
+            <button class="pill" data-value="lyrics"
+              data-tooltip="Location is named somewhere in the lyrics">Lyrics</button>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <span class="control-label">Search radius: <strong id="distance-label">500 km</strong></span>
+          <input type="range" id="distance-slider" min="50" max="2000" step="50" value="500" />
+          <div class="slider-bounds"><span>50 km</span><span>2000 km</span></div>
+        </div>
+
+        <button id="btn-find-nearby" class="primary-btn">Find Nearby Songs</button>
+        <div id="results-song" class="results"></div>
+      </div>
+
+    </aside>
+
+    <div id="map"></div>
+  </main>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h2>Settings</h2>
+
+      <label class="modal-label">
+        Ollama Model
+        <input type="text" id="input-model" value="llama3.2" />
+        <span class="hint">e.g. llama3.2, mistral, gemma2</span>
+      </label>
+      <label class="modal-label">
+        Ollama URL
+        <input type="text" id="input-ollama-url" value="http://localhost:11434" />
+      </label>
+      <div id="ollama-status" class="ollama-status"></div>
+
+      <hr class="modal-divider" />
+
+      <label class="modal-label">
+        YouTube Data API Key
+        <input type="text" id="input-youtube-key" placeholder="Paste your YouTube API key" />
+        <span class="hint">
+          Best set via 1Password CLI — run <code>./start.sh</code> to inject automatically.
+          Or paste directly above. Enable YouTube Data API v3 at
+          <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a>.
+        </span>
+      </label>
+
+      <div class="modal-actions">
+        <button id="btn-test-ollama" class="secondary-btn">Test Ollama</button>
+        <button id="btn-close-settings" class="primary-btn">Save & Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

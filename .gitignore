@@ -1,0 +1,13 @@
+# Personal 1Password secret references — copy to .env.tpl and fill in your own paths
+.env.tpl
+
+# Claude Code local config
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
